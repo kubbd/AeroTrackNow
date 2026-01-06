@@ -72,6 +72,12 @@ static constexpr int   LORA_TX_DBM   = 14;   // adjust to comply with your rules
 static constexpr uint32_t TELEMETRY_PERIOD_MS = 1000;
 
 // ===================== GUIDANCE TUNING =====================
+
+// Parafoil trim is adjusted in steps of 0.01..0.02
+static constexpr float SERVO_TRIM = 0.0f;  
+// + = pull LEFT slightly
+// - = pull RIGHT slightly
+
 // Normalized servo command range is -1..+1
 static constexpr float KP_TURN = 0.9f;             // turning aggressiveness
 static constexpr float MAX_TURN = 0.45f;           // clamp (avoid aggressive turns)
