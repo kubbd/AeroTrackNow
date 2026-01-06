@@ -33,3 +33,5 @@ Inside `firmware/cansat_flight.ino`:
 - `RANGE_US` (servo throw) – start small, increase carefully
 - `KP_TURN`, `MAX_TURN`
 - `TERMINAL_HEIGHT_M`, `CAPTURE_RADIUS_M`
+- `SERVO_TRIM` (parafoil trim) - change in steps of 0.01..0.02
+
