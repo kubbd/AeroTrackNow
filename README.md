@@ -2,6 +2,10 @@
 
 Flight code for a guided CanSat with parafoil steering.
 
+# ChatGPT Chat Link
+
+https://chatgpt.com/share/695c7dbe-eb48-800c-9de2-c052dbff324f
+
 ## Features
 - Predictive landing guidance (steers to make predicted landing converge to target)
 - GNSS (ZED-X20P) with RTK passthrough (Teensy forwards RTCM bytes to GNSS)
