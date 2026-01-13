@@ -553,6 +553,19 @@ void loop() {
     }
 
     case TERMINAL:
+      if (targetReceived) {
+        runPredictiveGuidance();
+
+        double height_agl = gnss_alt_msl - target_alt_msl;
+        double dist_pred_to_target = distanceMeters(pred_lat, pred_lon, target_lat, target_lon);
+
+        if (height_agl > 0.5 && dist_pred_to_target > CAPTURE_RADIUS_M) {
+          setServosNormalized(cmdL, cmdR);
+          state = GUIDED_DESCENT;
+          break;
+        }
+      }
+
       cmdL = 0; cmdR = 0;
       setServosNormalized(0, 0);
       if (landingDetected()) state = LANDED;
