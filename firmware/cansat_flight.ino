@@ -148,6 +148,40 @@ enum MissionState : uint8_t {
 
 MissionState state = BOOT;
 
+// ===================== TEST HOOKS (DISABLED BY DEFAULT) =====================
+// Define AEROTRACK_TEST_HOOKS at compile time to enable test-only overrides.
+// Example (Arduino IDE): add "-DAEROTRACK_TEST_HOOKS" to compiler flags.
+#ifdef AEROTRACK_TEST_HOOKS
+struct TestHooks {
+  // Sensor overrides (set use_* = true to inject)
+  bool use_gnss = false;
+  double gnss_lat = 0.0;
+  double gnss_lon = 0.0;
+  double gnss_alt_msl = 0.0;
+  double gnss_speed = 0.0;
+  double gnss_track_rad = 0.0;
+
+  bool use_baro = false;
+  double baro_pressure_hPa = 1013.25;
+  double baro_temp_c = 20.0;
+  double baro_sink_rate = 0.0;
+
+  bool use_imu = false;
+  float imu_ax = 0.0f;
+  float imu_ay = 0.0f;
+  float imu_az = 9.81f;
+
+  // State forcing
+  bool force_state = false;
+  MissionState forced_state = BOOT;
+
+  // Guidance disable
+  bool disable_guidance = false;
+};
+
+static TestHooks testHooks;
+#endif
+
 // ===================== GLOBALS =====================
 SFE_UBLOX_GNSS gnss;
 
@@ -255,6 +289,16 @@ static void setupGNSS() {
 }
 
 static void updateGNSS() {
+#ifdef AEROTRACK_TEST_HOOKS
+  if (testHooks.use_gnss) {
+    lat = testHooks.gnss_lat;
+    lon = testHooks.gnss_lon;
+    gnss_alt_msl = testHooks.gnss_alt_msl;
+    ground_speed = testHooks.gnss_speed;
+    ground_track_rad = testHooks.gnss_track_rad;
+    return;
+  }
+#endif
   gnss.checkUblox();
   if (gnss.getPVT()) {
     lat = gnss.getLatitude()  * 1e-7;
@@ -286,6 +330,14 @@ static void setupBMP280() {
 }
 
 static void updateBMP280() {
+#ifdef AEROTRACK_TEST_HOOKS
+  if (testHooks.use_baro) {
+    pressure_hPa = testHooks.baro_pressure_hPa;
+    temp_c = testHooks.baro_temp_c;
+    sink_rate = testHooks.baro_sink_rate;
+    return;
+  }
+#endif
   pressure_hPa = bmp.readPressure() / 100.0;
   temp_c = bmp.readTemperature();
 
@@ -308,6 +360,14 @@ static void setupBNO085() {
 }
 
 static bool readIMUAccel(float &ax, float &ay, float &az) {
+#ifdef AEROTRACK_TEST_HOOKS
+  if (testHooks.use_imu) {
+    ax = testHooks.imu_ax;
+    ay = testHooks.imu_ay;
+    az = testHooks.imu_az;
+    return true;
+  }
+#endif
   if (bno08x.getSensorEvent(&bnoValue)) {
     if (bnoValue.sensorId == SH2_ACCELEROMETER) {
       ax = bnoValue.un.accelerometer.x;
@@ -365,6 +425,13 @@ static void pollLoRa() {
 
 // ===================== GUIDANCE =====================
 static void runPredictiveGuidance() {
+#ifdef AEROTRACK_TEST_HOOKS
+  if (testHooks.disable_guidance) {
+    cmdL = 0.0f;
+    cmdR = 0.0f;
+    return;
+  }
+#endif
   double height_agl = gnss_alt_msl - target_alt_msl;
   if (height_agl <= 0.5) { cmdL = 0; cmdR = 0; return; }
 
@@ -517,6 +584,12 @@ void loop() {
   updateBMP280();
   updateGNSS();
   pollLoRa();
+
+#ifdef AEROTRACK_TEST_HOOKS
+  if (testHooks.force_state) {
+    state = testHooks.forced_state;
+  }
+#endif
 
   switch (state) {
     case BOOT:
