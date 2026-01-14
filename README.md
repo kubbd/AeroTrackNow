@@ -29,6 +29,32 @@ The ground station has two pieces that work together:
 
 A Teensy is used on the ground because the SX1262 is an SPI radio that needs tight timing and interrupt handling. The Teensy handles those hardware details and exposes a simple USB serial link to the PC.
 
+### USB serial ports (Teensy + optional RTK source)
+Both the Teensy ground radio node and the RTK correction source plug into your laptop over USB. They show up as **two separate serial ports**, and you tell the ground station which is which with CLI flags.
+
+- `--port` is **always** the Teensy ground radio node.
+- `--rtk-port` is **optional** and is only for RTK correction input.
+- RTK is optional — the system runs fine without it.
+
+**USB device → CLI argument**
+
+| USB device | CLI argument |
+| --- | --- |
+| Teensy ground radio node | `--port` |
+| RTK correction source (optional) | `--rtk-port` |
+
+**Examples**
+
+Without RTK:
+```
+python3 ground_station_advanced.py --port /dev/ttyACM0 --target-lat 39.1234567 --target-lon -104.9876543 --target-alt 1850.0
+```
+
+With RTK:
+```
+python3 ground_station_advanced.py --port /dev/ttyACM0 --rtk-port /dev/ttyUSB0 --target-lat 39.1234567 --target-lon -104.9876543 --target-alt 1850.0
+```
+
 ## Radio architecture
 The ground radio node is intentionally “transparent.” It just moves bytes and doesn’t care about packet formats.
 
