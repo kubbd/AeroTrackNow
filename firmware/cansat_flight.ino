@@ -230,8 +230,8 @@ static float clampf(float v, float lo, float hi) {
 
 // Servo mapping: -1..+1 -> microseconds
 static void setServosNormalized(float left, float right) {
-  left  = clampf(left,  -1.0f, 1.0f);
-  right = clampf(right, -1.0f, 1.0f);
+  left  = clampf(left  + SERVO_TRIM, -1.0f, 1.0f);
+  right = clampf(right - SERVO_TRIM, -1.0f, 1.0f);
 
   const int NEUTRAL_US = 1500;
   const int RANGE_US   = 350; // start smaller (e.g., 200) and increase carefully

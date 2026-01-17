@@ -554,9 +554,12 @@ class PlotManager:
 
 
 def build_target_packet(lat: float, lon: float, alt_msl: float) -> bytes:
-    payload = TARGET_STRUCT_NO_CRC.pack(MSG_TARGET, int(lat * 1e7), int(lon * 1e7), int(alt_msl * 100))
+    lat_e7 = int(round(lat * 1e7))
+    lon_e7 = int(round(lon * 1e7))
+    alt_cm = int(round(alt_msl * 100))
+    payload = TARGET_STRUCT_NO_CRC.pack(MSG_TARGET, lat_e7, lon_e7, alt_cm)
     crc = crc16_ccitt(payload)
-    return TARGET_STRUCT_WITH_CRC.pack(MSG_TARGET, int(lat * 1e7), int(lon * 1e7), int(alt_msl * 100), crc)
+    return TARGET_STRUCT_WITH_CRC.pack(MSG_TARGET, lat_e7, lon_e7, alt_cm, crc)
 
 
 def command_loop(manager: PlotManager, stop_event: threading.Event) -> None:

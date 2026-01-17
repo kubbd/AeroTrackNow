@@ -1,6 +1,6 @@
 // ground_radio_teensy.ino
 // Teensy 4.0 ground radio bridge: USB Serial <-> SX1262 LoRa
-// Forwards raw bytes without parsing or CRC logic.
+// Forwards raw bytes without parsing or app-level CRC logic.
 
 #include <Arduino.h>
 #include <RadioLib.h>
@@ -44,7 +44,10 @@ void setup() {
   }
 
   radio.setOutputPower(LORA_TX_DBM);
-  radio.setCRC(false); // transparent link: no CRC, no packet logic
+  // Match flight radio settings so payload length matches on both ends.
+  // The flight firmware uses radio.setCRC(true); mismatched CRC modes will
+  // cause extra bytes in the payload and break the ground-side CRC check.
+  radio.setCRC(true);
 
   radio.setDio1Action(setRadioFlag);
   startReceive();
