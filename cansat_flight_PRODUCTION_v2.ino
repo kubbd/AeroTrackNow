@@ -110,12 +110,20 @@ static constexpr int DROP_DEBOUNCE_COUNT = 3;            // Consecutive spikes n
 // Sink rate filtering
 static constexpr uint32_t BARO_UPDATE_INTERVAL_MS = 500;  // 2 Hz (was 100ms)
 static constexpr float SINK_FILTER_ALPHA = 0.15f;         // Low-pass filter
-static constexpr float SINK_RATE_MIN = 3.0f;              // Sanity bounds
+static constexpr float SINK_RATE_MIN = 0.0f;              // Sanity bounds (allow near-zero for landing detection)
 static constexpr float SINK_RATE_MAX = 8.0f;
+static constexpr float SINK_GNSS_BLEND_ALPHA = 0.2f;      // Blend GNSS vertical velocity into sink rate
 
 // Wind estimation
 static constexpr float WIND_FILTER_ALPHA = 0.05f;         // Very slow filter
 static constexpr float MAX_WIND_ESTIMATE = 15.0f;         // Sanity limit
+
+// Physics constants
+static constexpr float GRAVITY_MPS2 = 9.80665f;
+static constexpr float MAG_DECLINATION_DEG = 0.0f;        // Set per launch site
+static constexpr float MAG_DECLINATION_RAD = MAG_DECLINATION_DEG * DEG_TO_RAD;
+static constexpr float IMU_YAW_OFFSET_DEG = 0.0f;         // IMU aligned with CanSat X-axis
+static constexpr float IMU_YAW_OFFSET_RAD = IMU_YAW_OFFSET_DEG * DEG_TO_RAD;
 
 // MPC parameters (simplified)
 static constexpr int MPC_HORIZON = 10;                    // 5 seconds ahead
@@ -209,6 +217,14 @@ double gnss_alt_msl = 0.0;
 double ground_speed = 0.0;          // m/s
 double ground_track_rad = 0.0;      // radians
 double gnss_vertical_velocity = 0.0; // m/s (negative = down)
+
+// IMU heading
+double imu_heading_rad = 0.0;
+uint32_t last_heading_ms = 0;
+float imu_ax = 0.0f;
+float imu_ay = 0.0f;
+float imu_az = 0.0f;
+uint32_t last_accel_ms = 0;
 
 // GNSS quality
 uint8_t gnss_fix_type = 0;          // 0=no fix, 3=3D, 5=RTK fixed
@@ -320,10 +336,16 @@ static void estimateWind() {
     return;
   }
   
+  double heading_rad = 0.0;
+  bool heading_valid = readIMUHeading(heading_rad);
+  if (!heading_valid) {
+    heading_rad = ground_track_rad;
+  }
+
   // Predicted airspeed vector (in heading direction)
   double airspeed = sink_rate_filtered * PARAFOIL_GLIDE_RATIO;
-  double airspeed_north = airspeed * cos(ground_track_rad);
-  double airspeed_east = airspeed * sin(ground_track_rad);
+  double airspeed_north = airspeed * cos(heading_rad);
+  double airspeed_east = airspeed * sin(heading_rad);
   
   // Actual ground velocity
   double ground_vel_north = ground_speed * cos(ground_track_rad);
@@ -368,10 +390,15 @@ static void predictLandingWithPhysics() {
   // Clamp time (avoid extreme predictions)
   if (time_to_ground > 300.0) time_to_ground = 300.0;  // 5 minutes max
   
+  double heading_rad = 0.0;
+  if (!readIMUHeading(heading_rad)) {
+    heading_rad = ground_track_rad;
+  }
+
   // Airspeed vector (in current heading)
   double airspeed = effective_sink * PARAFOIL_GLIDE_RATIO;
-  double airspeed_north = airspeed * cos(ground_track_rad);
-  double airspeed_east = airspeed * sin(ground_track_rad);
+  double airspeed_north = airspeed * cos(heading_rad);
+  double airspeed_east = airspeed * sin(heading_rad);
   
   // Ground velocity = airspeed + wind
   double ground_vel_north = airspeed_north + wind_north;
@@ -398,7 +425,10 @@ static float computeMPCControl() {
   // Current state
   double current_lat = lat;
   double current_lon = lon;
-  double current_heading = ground_track_rad;
+  double current_heading = 0.0;
+  if (!readIMUHeading(current_heading)) {
+    current_heading = ground_track_rad;
+  }
   double current_alt = gnss_alt_msl;
   
   // Sample turn commands from -1.0 to +1.0
@@ -414,13 +444,17 @@ static float computeMPCControl() {
     float dt = 0.5f;  // 500ms steps
     
     for (int step = 0; step < MPC_HORIZON; step++) {
-      // Apply turn command (simplified)
-      float turn_rate = test_cmd * MAX_BANK_ANGLE_RAD;  // rad/s
+      // Apply turn command (bank angle -> turn rate)
+      float bank_angle = test_cmd * MAX_BANK_ANGLE_RAD;
+      double airspeed = sink_rate_filtered * PARAFOIL_GLIDE_RATIO;
+      float turn_rate = 0.0f;
+      if (airspeed > 0.5) {
+        turn_rate = (GRAVITY_MPS2 * tanf(bank_angle)) / (float)airspeed;
+      }
       sim_heading += turn_rate * dt;
       sim_heading = wrapAngle(sim_heading);
       
       // Update position
-      double airspeed = sink_rate_filtered * PARAFOIL_GLIDE_RATIO;
       double ground_vel_north = airspeed * cos(sim_heading) + wind_north;
       double ground_vel_east = airspeed * sin(sim_heading) + wind_east;
       
@@ -466,8 +500,13 @@ static void runPredictiveGuidance() {
   // Compute desired heading
   double desired_bearing = bearingRad(pred_lat, pred_lon, target_lat, target_lon);
   
+  double heading_rad = 0.0;
+  if (!readIMUHeading(heading_rad)) {
+    heading_rad = ground_track_rad;
+  }
+
   // Heading error
-  double heading_error = desired_bearing - ground_track_rad;
+  double heading_error = desired_bearing - heading_rad;
   heading_error = wrapAngle(heading_error);
   
   // Use MPC if we have time, else use simple proportional
@@ -641,7 +680,8 @@ static void updateBMP280() {
   // Optional: Fuse with GNSS vertical velocity
   if (gnss_fix_type >= 3 && fabs(gnss_vertical_velocity) < 20.0) {
     sink_rate_gnss = -gnss_vertical_velocity;  // Convert to positive-down
-    // Could blend: sink_rate_filtered = 0.7 * baro + 0.3 * gnss
+    sink_rate_filtered = sink_rate_filtered * (1.0 - SINK_GNSS_BLEND_ALPHA) +
+                         sink_rate_gnss * SINK_GNSS_BLEND_ALPHA;
   }
 }
 
@@ -654,19 +694,26 @@ static void setupBNO085() {
   }
   
   bno08x.enableReport(SH2_ACCELEROMETER, 50);  // 20 Hz
+  bno08x.enableReport(SH2_ROTATION_VECTOR, 50);  // Heading (uses magnetometer)
   Serial.println("BNO085 initialized");
 }
 
 static bool readIMUAccel(float &ax, float &ay, float &az) {
-  if (bno08x.getSensorEvent(&bnoValue)) {
-    if (bnoValue.sensorId == SH2_ACCELEROMETER) {
-      ax = bnoValue.un.accelerometer.x;
-      ay = bnoValue.un.accelerometer.y;
-      az = bnoValue.un.accelerometer.z;
-      return true;
-    }
+  if ((millis() - last_accel_ms) > 200) {
+    return false;
   }
-  return false;
+  ax = imu_ax;
+  ay = imu_ay;
+  az = imu_az;
+  return true;
+}
+
+static bool readIMUHeading(double &heading_rad) {
+  if ((millis() - last_heading_ms) > 500) {
+    return false;
+  }
+  heading_rad = imu_heading_rad;
+  return true;
 }
 
 // ===================== LORA FUNCTIONS =====================
@@ -837,6 +884,28 @@ static bool landingDetected() {
   return false;
 }
 
+static void updateIMU() {
+  while (bno08x.getSensorEvent(&bnoValue)) {
+    if (bnoValue.sensorId == SH2_ACCELEROMETER) {
+      imu_ax = bnoValue.un.accelerometer.x;
+      imu_ay = bnoValue.un.accelerometer.y;
+      imu_az = bnoValue.un.accelerometer.z;
+      last_accel_ms = millis();
+    } else if (bnoValue.sensorId == SH2_ROTATION_VECTOR) {
+      float qw = bnoValue.un.rotationVector.real;
+      float qx = bnoValue.un.rotationVector.i;
+      float qy = bnoValue.un.rotationVector.j;
+      float qz = bnoValue.un.rotationVector.k;
+
+      double siny_cosp = 2.0 * (qw * qz + qx * qy);
+      double cosy_cosp = 1.0 - 2.0 * (qy * qy + qz * qz);
+      double heading_rad = atan2(siny_cosp, cosy_cosp) + MAG_DECLINATION_RAD + IMU_YAW_OFFSET_RAD;
+      imu_heading_rad = wrapAngle((float)heading_rad);
+      last_heading_ms = millis();
+    }
+  }
+}
+
 // ===================== TELEMETRY =====================
 
 static void sendTelemetry1Hz() {
@@ -944,6 +1013,7 @@ void loop() {
   // Update sensors
   updateBMP280();
   updateGNSS();
+  updateIMU();
   pollLoRa();
   
   // State machine

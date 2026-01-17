@@ -17,7 +17,7 @@ The flight stack runs on a Teensy 4.0 and includes:
   - receive RTK continuously
   - send telemetry @ 1 Hz
 - BMP280: pressure + temperature (and sink-rate estimate)
-- BNO085: accelerometer (drop detection)
+- BNO085: accelerometer + rotation vector (drop detection + heading)
 - Dual-servo differential steering
 - No buzzer
 
@@ -98,6 +98,13 @@ Inside `firmware/cansat_flight.ino`:
 - `KP_TURN`, `MAX_TURN`
 - `TERMINAL_HEIGHT_M`, `CAPTURE_RADIUS_M`
 - `SERVO_TRIM` (parafoil trim) – change in steps of 0.01..0.02
+
+Inside `cansat_flight_PRODUCTION_v2.ino`:
+- `MAG_DECLINATION_DEG` – magnetic declination for the launch site (true-north alignment)
+- `IMU_YAW_OFFSET_DEG` – IMU mounting yaw offset (0° if aligned to CanSat X-axis)
+- `SINK_GNSS_BLEND_ALPHA` – blend factor for GNSS vertical velocity into sink rate
+- `SERVO_RANGE_US`, `SERVO_MAX_RATE`, `SERVO_DEADBAND` – steering authority and responsiveness
+- `FINAL_APPROACH_HEIGHT_M`, `FLARE_HEIGHT_M`, `TERMINAL_HEIGHT_M` – terminal guidance gates
 
 **Why trim exists and how to tune it:**
 Parafoils usually fly with a slight built-in bias. `SERVO_TRIM` lets you offset the neutral command so the canopy flies straight. Start at 0.0, do a short test glide, and nudge the trim by 0.01–0.02 until it tracks straight with neutral steering.
