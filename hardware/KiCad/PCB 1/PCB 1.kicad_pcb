@@ -761,6 +761,17 @@
 			(uuid "403928fe-44ff-4d7d-a7a5-03ac5ef2e6ee")
 		)
 		(embedded_fonts no)
+		(model "/Users/kuba/Documents/GitHub/AeroTrackNow/hardware/KiCad/Libaries/AS-RTK2B-MICRO-F9P-L1L2UFLTH-00/AS-RTK2B-MICRO-F9P-L1L2UFLTH-00.step"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz -90 -0 -0)
+			)
+		)
 	)
 	(footprint "Capacitor_SMD:C_0805_2012Metric"
 		(layer "F.Cu")

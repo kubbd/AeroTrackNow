@@ -78,17 +78,97 @@
 		)
 	)
 	(net 0 "")
-	(gr_poly
-		(pts
-			(xy 135.103782 91.200026) (xy 159.852519 66.451289) (xy 184.601256 91.200026) (xy 159.852519 115.948763)
+	(footprint "AGVLB256.A.07.0100AO:AGVLB256.A.07.0100AO"
+		(layer "F.Cu")
+		(uuid "027f5f62-4207-4de9-a486-b6c2b79eda65")
+		(at 159.57448 91.186612 45)
+		(property "Reference" "U"
+			(at 0 -0.499999 45)
+			(unlocked yes)
+			(layer "F.SilkS")
+			(uuid "9842df2e-9d42-4f06-90ac-16494f35a150")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.1)
+				)
+			)
 		)
-		(stroke
-			(width 0.05)
-			(type solid)
+		(property "Value" "AGVLB256.A.07.0100AO"
+			(at 0 1 45)
+			(unlocked yes)
+			(layer "F.Fab")
+			(uuid "13768ebf-4422-4a03-98a1-3fb2ce21958c")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
 		)
-		(fill no)
-		(layer "F.SilkS")
-		(uuid "3d4e7a1b-d9c5-43d6-98f3-4445cfb50749")
+		(property "Datasheet" ""
+			(at 0 0 45)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "5a731743-97ae-413b-a1b7-108b7caa38d5")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 45)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "a42af69a-d62a-4770-ae88-ea81b1ef0e39")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(attr smd)
+		(fp_poly
+			(pts
+				(xy -17.35 -17.225) (xy 17.65 -17.225) (xy 17.65 17.775) (xy -17.35 17.775)
+			)
+			(stroke
+				(width 0.1)
+				(type default)
+			)
+			(fill no)
+			(layer "F.SilkS")
+			(uuid "742b14e9-e486-4742-be5a-32e141daf159")
+		)
+		(fp_text user "${REFERENCE}"
+			(at 0 2.5 45)
+			(unlocked yes)
+			(layer "F.Fab")
+			(uuid "839d7562-9c76-4349-a3ba-212e576c667b")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(embedded_fonts no)
+		(model "/Users/kuba/Documents/GitHub/AeroTrackNow/hardware/KiCad/Libaries/AGVLB256.A.07.0100AO.pretty/AGVLB256.A.07.0100AO_Web.STEP"
+			(offset
+				(xyz 357.5 -418 3.5)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz -0 -180 -0)
+			)
+		)
 	)
 	(gr_line
 		(start 179.65153 75.643651)
@@ -280,9 +360,9 @@
 		(uuid "8e0a516f-f613-40b9-9249-84a6b74ba839")
 	)
 	(gr_arc
-		(start 135.53744 108.442137)
-		(mid 131.733076 101.089956)
-		(end 130.097459 92.975)
+		(start 135.543948 108.437524)
+		(mid 131.740598 101.087311)
+		(end 130.105417 92.974525)
 		(stroke
 			(width 0.05)
 			(type default)
@@ -345,7 +425,7 @@
 		(uuid "abeb46d6-94b1-4bf1-9ad8-ccdb2ea2cbc0")
 	)
 	(gr_line
-		(start 131.975 89.475)
+		(start 131.975 89.475703)
 		(end 130.097459 89.475)
 		(stroke
 			(width 0.05)
@@ -355,8 +435,8 @@
 		(uuid "b75e9c8c-f783-4949-86e9-5ca86a7d7ce0")
 	)
 	(gr_line
-		(start 131.975 92.975)
-		(end 130.097459 92.975)
+		(start 131.975 92.974297)
+		(end 130.105417 92.974525)
 		(stroke
 			(width 0.05)
 			(type default)
@@ -366,7 +446,7 @@
 	)
 	(gr_line
 		(start 137.225124 75.643652)
-		(end 135.543948 73.962476)
+		(end 135.539826 73.959552)
 		(stroke
 			(width 0.05)
 			(type default)
@@ -586,25 +666,6 @@
 				(xy 157.726027 61.977811) (xy 157.730473 61.977488) (xy 158.787456 61.919905) (xy 158.791886 61.919744)
 				(xy 159.850336 61.90054) (xy 159.854746 61.90054)
 			)
-		)
-	)
-	(group ""
-		(uuid "4d2f3764-2abf-4131-94e1-957e8bd2bc83")
-		(members "08420494-acae-4cb6-b326-e4ec070ceaf3" "0874ac52-5748-4b44-a42b-39c7dd0e0d57"
-			"187c21d6-b81d-414a-9478-8a24abd201f2" "25520365-3cfc-4063-9ba6-c8a53d1a99ec"
-			"2c1db930-8e98-4a40-907d-efec6362c9b9" "2c858422-98ac-4b91-a749-b69f62f56b58"
-			"318abbf7-6ec9-4667-b46f-09b83ca430a0" "32ed5a8b-d3d5-4f88-a69a-5bfa9e14f704"
-			"3a6c4926-e2cc-405c-9a9d-de3e5c4a7e07" "451bfbaa-d56b-4422-830a-6ed66245e663"
-			"50ac55ce-af95-4228-92ae-1eef703e2e83" "54ac7e0c-4441-4b64-93c2-e85b231f5f50"
-			"5d94fd95-9c2e-4fd7-9aa7-9692d225dfb3" "6633e524-60eb-4d9c-949a-830a09ebdfe7"
-			"66ec3ab0-8199-4804-8dc8-77620aa3b0fb" "6f40bb01-fddc-4e29-99e8-5e5807d9427a"
-			"7293536b-0a75-4c20-b26b-3f0fc488779b" "8e0a516f-f613-40b9-9249-84a6b74ba839"
-			"92b5f240-f942-4c7f-b663-f64fbd003541" "a084cc9a-2d67-4f3d-8032-c9ba6d9a4095"
-			"a0a0bd65-b596-4a53-8b01-b0b236ea6360" "a87c5d81-3f74-4050-9fac-efd929fc7d35"
-			"abc2d670-1d08-49e9-b30b-091774b2664b" "abeb46d6-94b1-4bf1-9ad8-ccdb2ea2cbc0"
-			"b75e9c8c-f783-4949-86e9-5ca86a7d7ce0" "c01f7486-24aa-4c96-80d5-0f3f39423ac7"
-			"ccfeb74e-9815-4f51-b051-d2d05180265d" "d2d00f83-dec7-438c-a761-8b60de42d363"
-			"d5bca7a1-e69a-4310-8d2f-d1815de8b18c" "f802abe9-49d3-4fe6-a8fe-16165a57880c"
 		)
 	)
 	(embedded_fonts no)

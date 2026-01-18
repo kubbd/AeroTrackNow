@@ -566,6 +566,17 @@
 			(uuid "4fc91168-22a9-4827-8b2a-ff6b023a7572")
 		)
 		(embedded_fonts no)
+		(model "/Users/kuba/Documents/GitHub/AeroTrackNow/hardware/KiCad/Libaries/SX1262-LF/CORE1262-868M.step"
+			(offset
+				(xyz 11 9.5 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz -90 -0 -90)
+			)
+		)
 	)
 	(footprint "Connector_JST:JST_PH_B14B-PH-K_1x14_P2.00mm_Vertical"
 		(layer "F.Cu")

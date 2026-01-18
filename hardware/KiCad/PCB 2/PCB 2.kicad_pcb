@@ -779,6 +779,17 @@
 			(uuid "d935f752-0f20-459a-97bf-b7a3cfb592c6")
 		)
 		(embedded_fonts no)
+		(model "/Users/kuba/Documents/GitHub/AeroTrackNow/hardware/KiCad/Libaries/BNO085/4754 BNO085 STEMMA QT.step"
+			(offset
+				(xyz -12.725 -11.425 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz -0 -0 -0)
+			)
+		)
 	)
 	(footprint "teensy.pretty-master:Teensy40"
 		(layer "F.Cu")
@@ -1658,7 +1669,7 @@
 			(uuid "c88c9d5d-3cb1-4fbe-98d9-48ade7d7e93a")
 		)
 		(embedded_fonts no)
-		(model "${KICAD_USER_DIR}/teensy.pretty/Teensy_4.0_Assembly.STEP"
+		(model "/Users/kuba/Documents/GitHub/AeroTrackNow/hardware/KiCad/Libaries/teensy.pretty-master/Teensy_4.0_Assembly.STEP"
 			(offset
 				(xyz 33 9.5 -11)
 			)
@@ -1666,7 +1677,7 @@
 				(xyz 1 1 1)
 			)
 			(rotate
-				(xyz -90 0 0)
+				(xyz -90 -0 -0)
 			)
 		)
 	)
@@ -2493,6 +2504,17 @@
 			(uuid "bc1bba21-4fc4-43a5-9fd0-280637f5605d")
 		)
 		(embedded_fonts no)
+		(model "/Users/kuba/Documents/GitHub/AeroTrackNow/hardware/KiCad/Libaries/BMP280 OEM/bmp280_module.stp"
+			(offset
+				(xyz 4 9 24.5)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz -90 -0 -90)
+			)
+		)
 	)
 	(footprint "Connector_JST:JST_PH_B14B-PH-K_1x14_P2.00mm_Vertical"
 		(layer "B.Cu")

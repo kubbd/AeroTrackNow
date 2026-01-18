@@ -1587,6 +1587,17 @@
 			(uuid "ed90e394-3e8e-419f-959e-4f5cf393518e")
 		)
 		(embedded_fonts no)
+		(model "/Users/kuba/Documents/GitHub/AeroTrackNow/hardware/KiCad/Libaries/D24V22F5/D24V22F5.step"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz -90 -0 -0)
+			)
+		)
 	)
 	(footprint "Capacitor_SMD:CP_Elec_5x5.4"
 		(layer "F.Cu")
@@ -3196,6 +3207,17 @@
 			(uuid "1ae4dad5-2c0b-4e9c-bc6b-fdb1c862589b")
 		)
 		(embedded_fonts no)
+		(model "/Users/kuba/Documents/GitHub/AeroTrackNow/hardware/KiCad/Libaries/D24V10F3/D24V10F3.step"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
 	)
 	(footprint "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical"
 		(layer "B.Cu")
