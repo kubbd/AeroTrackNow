@@ -3,10 +3,6 @@
 ## Project overview
 This repo holds the flight and ground code for a guided CanSat with parafoil steering. It’s built around a Teensy 4.0 and a LoRa link, with a simple Python ground station on the PC.
 
-# ChatGPT Chat Link
-
-https://chatgpt.com/share/695c7dbe-eb48-800c-9de2-c052dbff324f
-
 ## Flight system
 The flight stack runs on a Teensy 4.0 and includes:
 
