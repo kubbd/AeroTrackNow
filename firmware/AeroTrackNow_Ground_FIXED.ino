@@ -1,24 +1,3 @@
-/*******************************************************
- * AeroTrackNow Ground Radio - PRODUCTION VERSION 3.0
- * Teensy 4.0 USB-to-LoRa Bridge
- *
- * Key improvements:
- * - Explicit RX/TX state handling with timeouts
- * - CRC enabled to match flight code
- *******************************************************/
-
-/*******************************************************
- * ✅ GROUND STATION CODE - NO BUGS FOUND
- * 
- * This code is already correct (v3.0):
- * - CRC enabled (matches flight code)
- * - Proper TX/RX state handling
- * - Timeout guards implemented
- * - Transparent USB-to-LoRa bridge
- * 
- * NO CHANGES NEEDED - Upload as-is
- *******************************************************/
-
 #include <Arduino.h>
 #include <RadioLib.h>
 // ===================== PINOUT (Same as flight) =====================
