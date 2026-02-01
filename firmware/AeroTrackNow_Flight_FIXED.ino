@@ -1,31 +1,3 @@
-/*******************************************************
- * AeroTrackNow CanSat – PRODUCTION VERSION 3.0
- * Teensy 4.0 Flight Code - Accuracy-Focused
- *
- * Brutally honest note:
- * - Landing within 1m from 2000m is not guaranteed in real wind.
- * - This code improves estimation/control and reduces systematic error,
- *   but atmospheric variability still dominates at altitude.
- *******************************************************/
-
-/*******************************************************
- * ✅ ALL BUGS FIXED - READY FOR TESTING
- * 
- * Changes from v3.0:
- * 1. Servo time constant: 0.35s → 0.10s (MG92B actual spec)
- * 2. Wind update threshold: 6.0 → 8.0 m/s (Warsaw turbulence)
- * 3. Wind layer threshold: 8.0 → 10.0 m/s (wind shear)
- * 4. Wind decay: 0.02 → 0.005 /s (3 min time constant)
- * 5. RTK altitude fusion: 5% → 25% GNSS weight
- * 6. Heading calibration mode added
- * 
- * ⚠️ MANDATORY BEFORE FLIGHT:
- * - Calibrate HEADING_OFFSET_RAD (see line ~67)
- * - Test flights #1-2: measure actual sink rate & glide ratio
- * - Update NOMINAL_SINK_RATE and PARAFOIL_GLIDE_RATIO
- * - Calibrate SERVO_TRIM after first flights
- *******************************************************/
-
 #include <Arduino.h>
 #include <Wire.h>
 #include <Servo.h>
