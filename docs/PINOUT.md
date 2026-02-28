@@ -14,6 +14,7 @@ These are the **actual Teensy pin numbers** (the leading number in the KiCad pin
 - SCL = **19**
 
 ## LoRa (SX1262 / CORE1262-LF)
+This module requires controlling the external RF switch using RXEN/TXEN (not DIO2/DIO3), and it may need a slow SPI clock (~500 kHz) for reliable operation.
 - SCK = **13**
 - MOSI = **11**
 - MISO = **12**
